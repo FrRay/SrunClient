@@ -1,3 +1,4 @@
+#update 2023年3月23日15:56:54
 import socket
 import logging
 import configparser
@@ -22,6 +23,7 @@ def generate_config():  # 从数据源生成全部数据列表
     f.close()
     config['Description']={'totalNumber':awsl-1,
                             'defaultStart':int(awsl/2),
+                            'randomStart':True
                             }
     config['DEFAULT']=config['the1']
 
@@ -318,20 +320,31 @@ class HeartBeat:
         config = configparser.ConfigParser()
         config.read(setting_path)  # 配置文件
 
-        a=int(config['Description']['defaultStart'].strip())# 起始点
-        totalNumber=int(config['Description']['totalNumber'].strip())#总数
+        totalNumber=int(config['Description']['totalNumber'].strip())#读取总数
+        randomStart=bool(config['Description']['randomStart'].strip())#读取“是否从随机处开始”
+        
+        # 起始点随机
+        if randomStart:
+            import random
+            randomIndex=random.randint(1,totalNumber)
+            startIndex=randomIndex
+        
+        # 起点处默认
+        else:
+            startIndex=int(config['Description']['defaultStart'].strip()) 
 
-        # a = 36          
-        self.read_config(a)
+
+                
+        self.read_config(startIndex)
         while not self.check_connect():  # check连接,若失败
-            print('正在连接第'+str(a)+'...')
-            self.read_config(a)
+            print('正在连接第'+str(startIndex)+'...')
+            self.read_config(startIndex)
             self.login()  # 则重新login
-            if(a <= totalNumber):  
-                a = a+1
+            if(startIndex <= totalNumber):  
+                startIndex = startIndex+1
             else:
                 print("已到最后,现在从头开始循环...")
-                a = 1
+                startIndex = 1
 
         print('OVER!')
         print('Create By 夕颜.')
