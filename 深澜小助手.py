@@ -5,6 +5,7 @@ import configparser
 import time
 import os
 
+
 dataSource='DataSource.txt' #数据源
 setting_path = "my_setting.ini" #数据列表
 
@@ -352,3 +353,4 @@ class HeartBeat:
 
 if __name__ == "__main__":
     HeartBeat().check_online()
+
